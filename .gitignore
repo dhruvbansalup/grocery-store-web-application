@@ -4,3 +4,7 @@ venv
 
 
 __pycache__
+
+#Database Instance
+db.sqlite3
+instance/
