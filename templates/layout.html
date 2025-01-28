@@ -19,8 +19,23 @@
 
 </head>
 
-<body>
+<body class="bg-body-primary" data-bs-theme="dark">
+
+    {% include 'navbar.html' %}
+
     <div class="container">
+        <!-- Flask Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-danger" role="alert">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <!-- End Flask Flash Messages -->
+
         {% block content %}
 
         {% endblock %}

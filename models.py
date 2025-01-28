@@ -1,4 +1,7 @@
-from app import app, db
+from app import app
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
+db=SQLAlchemy(app)
 
 class User(db.Model):
     id=db.Column(db.Integer, primary_key=True)
@@ -10,8 +13,7 @@ class User(db.Model):
 class Category(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     name=db.Column(db.String(100), unique=True, nullable=False)
-    # Relationship
-    products=db.relationship('Product', backref='category', lazy=True)
+    
 
 class Product(db.Model):
     id=db.Column(db.Integer, primary_key=True)
@@ -23,7 +25,6 @@ class Product(db.Model):
     category_id=db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     # Relationship
     category=db.relationship('Category', backref='product', lazy=True)
-    order=db.relationship('Order', backref='product', lazy=True)
 
 
 class Cart(db.Model):
@@ -32,15 +33,13 @@ class Cart(db.Model):
     product_id=db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     quantity=db.Column(db.Integer, nullable=False)
     # Relationship
-    user=db.relationship('User', backref='cart', lazy=True)
     product=db.relationship('Product', backref='cart', lazy=True)
 
 class Transaction(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     datetime=db.Column(db.DateTime, nullable=False)
-    # Relationship
-    orders=db.relationship('Order', backref='transaction', lazy=True)
+    
 
 class Order(db.Model):
     id=db.Column(db.Integer, primary_key=True)
@@ -55,3 +54,10 @@ class Order(db.Model):
 
 with app.app_context():
     db.create_all()
+    # Create default admin user
+    admin=User.query.filter_by(is_admin=True).first()
+    if not admin:
+        password_hash=generate_password_hash('admin')
+        admin=User(username='admin', passhash=password_hash, is_admin=True, name='Admin')
+        db.session.add(admin)
+        db.session.commit()
