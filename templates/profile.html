@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Profile Page
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="card-title mb-0">My Profile</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <img src="https://api.dicebear.com/9.x/avataaars/svg?seed={{user.username}}" alt="Profile Photo" class="rounded-circle border border-primary" width="150" height="150">
+                    </div>
+                    <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
+                    <p class="card-text"><strong>Name:</strong> {{ user.name }}</p>
+                    <p class="card-text"><strong>User Id:</strong> {{ user.id }}</p>
+                </div>
+            </div>
+
+            <form action="" method="post" class="form mt-4 card shadow-sm" enctype="multipart/form-data">
+                <h3 class="card-header bg-secondary text-white">Update Profile</h3>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label for="username" class="form-label">New Username:</label>
+                        <input type="text" class="form-control" id="username" value="{{user.username}}" name="username"
+                            placeholder="Enter new username" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">New Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" placeholder="Enter new name">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="cpassword" class="form-label">Current Password:</label>
+                        <input type="password" class="form-control" id="cpassword" name="cpassword"
+                            placeholder="Enter current password" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password" class="form-label">New Password:</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Enter new password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+                </div>
+            </form>
+            <a class="btn btn-outline-danger mt-3 w-100" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
