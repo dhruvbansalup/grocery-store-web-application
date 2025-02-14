@@ -1,10 +1,20 @@
-from flask import render_template, request, flash, redirect, url_for, session
+from flask import render_template, request, flash, redirect, url_for, session, g
 from app import app
 from models import User, Category, Product, Cart, Transaction, Order
 from models import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
+# passing user to the all templates (for navbar)
+@app.before_request
+def load_user():
+    g.user=None
+    if 'user_id' in session:
+        g.user=User.query.get(session['user_id'])
+
+@app.context_processor
+def inject_user():
+    return dict(user=g.user)
 
 @app.route('/login')
 def login():
@@ -83,13 +93,17 @@ def auth_required(func):
 @app.route('/')
 @auth_required
 def index():
-    return render_template('index.html')
+    user=User.query.get(session['user_id'])
+    if user.is_admin:
+        return redirect(url_for('admin'))
+    else:
+        return render_template('index.html')
 
 @app.route('/profile')
 @auth_required
 def profile():
     user=User.query.get(session['user_id'])
-    return render_template("profile.html",user=user)
+    return render_template("profile.html")
 
 @app.route('/profile',methods=['POST'])
 @auth_required
@@ -132,3 +146,22 @@ def logout():
     print(session)
     session.pop('user_id')
     return redirect(url_for('login'))
+
+@app.route("/cart")
+@auth_required
+def cart():
+    return ""
+
+@app.route("/orders")
+@auth_required
+def orders():
+    return "" 
+
+@app.route("/admin")
+@auth_required
+def admin():
+    user=User.query.get(session['user_id'])
+    if not user.is_admin:
+        flash("You are not authorized to access admin dashboard.")
+        return redirect(url_for('index'))
+    return render_template('admin.html') 
