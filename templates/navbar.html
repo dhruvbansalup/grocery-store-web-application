@@ -24,19 +24,27 @@
                 </li>
                 {% endif %}
             </ul>
+
+
+            <!-- Load when user is Not logged In -->
+            {% if not user %}
+            <a class="btn btn-outline-warning me-2" href="{{ url_for('login') }}">Login</a>
+            <a class="btn btn-outline-secondary me-2" href="{{ url_for('register') }}">Register</a>
+
+            <!-- Load when user is logged in -->
+            {% else %}
             <form class="d-flex" role="search">
-
-                <!-- Load when user is Not logged In -->
-                {% if not user %}
-                <a class="btn btn-outline-warning me-2" href="{{ url_for('login') }}">Login</a>
-                <a class="btn btn-outline-secondary me-2" href="{{ url_for('register') }}">Register</a>
-
-                <!-- Load when user is logged in -->
-                {% else %}
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success me-2" type="submit">Search</button>
-                <a class="btn btn-outline-danger" href="{{url_for('logout')}}">Logout</a>
-                {% endif %}
+            </form>
+            <a class="btn btn-outline-danger me-2" href="{{url_for('logout')}}">Logout</a>
+            {% endif %}
+
+            <!-- Change Theme -->
+            <form action="/toggle_theme" method="post">
+                <button class="btn btn-outline-secondary me-2" type="submit" id="toggle_theme">
+                    <img src="{{ url_for('static', filename='images/theme-icon.png') }}" alt="Theme" width="20" height="20">
+                </button>
             </form>
         </div>
     </div>

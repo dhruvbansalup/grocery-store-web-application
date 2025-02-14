@@ -7,14 +7,27 @@ from functools import wraps
 
 # passing user to the all templates (for navbar)
 @app.before_request
-def load_user():
-    g.user=None
+def load_user_and_theme():
+    g.user = None
+    g.theme = 'dark'
     if 'user_id' in session:
-        g.user=User.query.get(session['user_id'])
+        g.user = User.query.get(session['user_id'])
+    if 'theme' in session:
+        g.theme = session['theme']
 
 @app.context_processor
-def inject_user():
-    return dict(user=g.user)
+def inject_user_and_theme():
+    return dict(user=g.user, theme=g.theme)
+
+@app.route('/toggle_theme',methods=['POST'])
+def toggle_theme():
+    current_theme = g.theme
+    if current_theme == 'light':
+        new_theme = 'dark'
+    else: 
+        new_theme='light'
+    session['theme'] = new_theme
+    return redirect(request.referrer)
 
 @app.route('/login')
 def login():
